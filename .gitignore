@@ -1,0 +1,72 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+Wheels/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+.venv.bak/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+.hypothesis/
+
+# IDEs and editors
+.idea/
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# mypy
+.mypy_cache/
+
+# OS files
+.DS_Store
+
+# Local env / secrets
+.env
+.env.*.local
+.env.local
+
+# LangChain / LLM caches
+.langchain/
+.cache/
+
+# Generated outputs (do not commit transformations and eval outputs)
+transform_*.csv
+eval_results.csv
+
+# Logs
+*.log
+
+# Misc
+*~
