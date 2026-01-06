@@ -53,11 +53,11 @@ Start -> Planner -> Code Generator -> Executor -> Critic -> Output CSV
   - Writes a unique CSV file: `transform_{slugified_description}_{UTC-timestamp}.csv`
   - Returns `output_path` in final state
 
- - **State Graph**: orchestrates nodes (`planner` -> `codegen` -> `executor` -> `critic`) and exposes `app.invoke(state)` to run flows. The critic may invoke the code generator again when fixes are requested by the LLM.
-
  - **Critic Agent** (`critic_agent`):
   - Input: `plan`, `code`, `sample_data`, produced `output`
   - Behavior: asks the LLM to judge correctness (YES/NO + reason). On NO it requests a corrected fenced Python snippet from the LLM and triggers a retry through the code generator and executor (limited retries).
+
+- **State Graph**: orchestrates nodes (`planner` -> `codegen` -> `executor` -> `critic`) and exposes `app.invoke(state)` to run flows. The critic may invoke the code generator again when fixes are requested by the LLM.
 
 ---
 
