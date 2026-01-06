@@ -16,7 +16,9 @@ flowchart LR
   Start([Start]) --> Planner["Planner Agent\n(Produces plan)"]
   Planner --> Codegen["Code Generator Agent\n(Generates Python -> assign `result_df`)"]
   Codegen --> Executor["Execution Agent\n(Executes code, produces CSV)"]
-  Executor --> Output["Output CSV\ntransform_{slug}_{timestamp}.csv"]
+  Executor --> Critic["Critic Agent\n(LLM validates output, requests fixes)"]
+  Critic -->|valid| Output["Output CSV\ntransform_{slug}_{timestamp}.csv"]
+  Critic -->|invalid / fix| Codegen
   Planner -.-> PlanStore((plan))
   Codegen -.-> CodeStore((code))
   Executor --> End([End])
@@ -24,7 +26,10 @@ flowchart LR
 
 ASCII fallback:
 
-Start -> Planner -> Code Generator -> Executor -> Output CSV
+Start -> Planner -> Code Generator -> Executor -> Critic -> Output CSV
+                         ^                                     |
+                         |-------------------------------------|
+                         | (on NO / fix request go back to Code Generator)
 
 - Planner: produces `plan` text (the step-by-step transform plan)
 - Code Generator: turns `plan` into Python code that must set `result_df`
@@ -48,7 +53,11 @@ Start -> Planner -> Code Generator -> Executor -> Output CSV
   - Writes a unique CSV file: `transform_{slugified_description}_{UTC-timestamp}.csv`
   - Returns `output_path` in final state
 
-- **State Graph**: orchestrates nodes (`planner` -> `codegen` -> `executor`) and exposes `app.invoke(state)` to run flows.
+ - **State Graph**: orchestrates nodes (`planner` -> `codegen` -> `executor` -> `critic`) and exposes `app.invoke(state)` to run flows. The critic may invoke the code generator again when fixes are requested by the LLM.
+
+ - **Critic Agent** (`critic_agent`):
+  - Input: `plan`, `code`, `sample_data`, produced `output`
+  - Behavior: asks the LLM to judge correctness (YES/NO + reason). On NO it requests a corrected fenced Python snippet from the LLM and triggers a retry through the code generator and executor (limited retries).
 
 ---
 
