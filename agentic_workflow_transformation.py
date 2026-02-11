@@ -24,9 +24,6 @@ class TransformState(TypedDict):
 # Validation is now handled by LLM critic instead of heuristics
 
 
-# Validation is now handled by LLM critic instead of heuristics
-
-
 # Simple planner that may use LLM; returns a short plan string
 def planner_agent(state: TransformState) -> Dict:
     desc = state.get("description", "")
